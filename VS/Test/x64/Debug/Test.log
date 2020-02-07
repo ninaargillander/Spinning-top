@@ -1,4 +1,2 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (GLUT_funkar_ej.vcxproj, Test.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Source.cpp
-c:\users\nina\desktop\test\test\source.cpp(25): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Test.vcxproj -> C:\Users\Nina\Desktop\Test\x64\Debug\Spin-top.exe
+  Test.vcxproj -> C:\Users\Nina\Documents\Plugg\Modellering\Spinning-top\VS\x64\Debug\Spin-top.exe
