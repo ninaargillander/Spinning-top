@@ -22,6 +22,16 @@ for n=1:N
 end
 
 t = 1:H:H*N+1;
-plot(t,mod(psi,2*pi),'r')
+%plot(t,mod(psi,2*pi),'r')
+%figure;
+%plot(t,mod(phi,2*pi),'r')
 figure;
-plot(t,mod(phi,2*pi),'r')
+
+
+for n =1:N
+    plot(r*cos(psi(n)), r*sin(psi(n)), '*');
+    axis([-1 1 -1 1]);
+    hold on;
+    plot(cos(phi(n)), sin(phi(n)), '*');
+    drawnow();
+end
