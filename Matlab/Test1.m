@@ -15,16 +15,10 @@ H=0.001; % step's size
 N=1000; % number of steps
 psi(1) = 0;
 phi(1) = 0;
-% phi_dot(1) = 0;
-% phi_double_dot(1) = 0;
+
 for n=1:N
-psi(n+1) = Euler( psi(n), psi_dot, H);
-
-phi(n+1) = Euler(phi(n), phi_dot, H);
-
-% phi_dot(n+1) = Euler( phi_dot(n), phi_double_dot(n), h);
-% phi_double_dot(n+1) = (cos(psi(n+1))/sin(psi(n+1)))*((m*g*l/I1) - phi_dot(n+1)*((psi_dot/2)*(1 + I3/I1)+(sqrt(3)/2)*phi_dot(n+1)));
-% phi(n+1) = Euler(phi(n), phi_dot(n), h);
+    psi(n+1) = Euler( psi(n), psi_dot, H);
+    phi(n+1) = Euler(phi(n), phi_dot, H);
 end
 
 t = 1:H:H*N+1;
