@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "geometry": "^0.1.0",
     "load-wavefront-obj": "^0.6.2"
   }
 }
