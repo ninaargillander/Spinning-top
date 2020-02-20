@@ -2,7 +2,7 @@ import { euler } from './euler.js';
 import { ourRotationY } from './ourRotationY.js';
 
 var scene = new THREE.Scene();
-var parent = new THREE.Group();
+var container = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var object = new THREE.Geometry();
 
@@ -29,7 +29,7 @@ scene.add(keyLight);
 scene.add(fillLight);
 scene.add(backLight);
 
-scene.add(parent);
+scene.add(container);
 
 //Ekvationer
 var F = 1;
@@ -55,12 +55,12 @@ objLoader.setPath('/assets/');
 objLoader.load('Test_snurra.obj', function (object) {
 	//Får ej stå i origo för att kunna beräkna rotation. 
 	object.position.x = 1;
-	object.position.y -= 5;
+	object.position.y = -9;
 	object.position.z = 1;
-
-	parent.add(object);
-
 	originalPosition = object.children["0"].geometry.attributes.position.array;
+
+	//Vi vill komma åt object utanför denna load-funktion!!
+	container.add(object);
 
 	for (var i = 0; i < 1000; ++i) {
 		psi[i + 1] = euler(psi[i], psi_dot, H);
@@ -72,18 +72,19 @@ objLoader.load('Test_snurra.obj', function (object) {
 	}
 
 
-	//setInterval(function () { ourRotationY(object, psi, originalPosition) }, 100);
+	//setInterval(function () { ourRotationY(object, 0.5, originalPosition) }, 100);
 
 
 
 });
-var k = 0;
+
+var k = 0.1;
 var animate = function () {
 	requestAnimationFrame(animate);
 
-	setTimeout(ourRotationY(parent, k++, originalPosition), 100);
+	ourRotationY(container, k += 0.1, originalPosition);
 
 	renderer.render(scene, camera);
 };
 
-animate();
+setTimeout(animate(), 100);
