@@ -2,6 +2,7 @@ import { euler } from './euler.js';
 import { ourRotationY } from './ourRotationY.js';
 
 var scene = new THREE.Scene();
+var parent = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var object = new THREE.Geometry();
 
@@ -28,6 +29,8 @@ scene.add(keyLight);
 scene.add(fillLight);
 scene.add(backLight);
 
+scene.add(parent);
+
 //Ekvationer
 var F = 1;
 var r = 0.02;
@@ -44,7 +47,7 @@ var psi_dot = (F * r * delta_t) / I3;
 var psi = [];
 psi[0] = 0;
 
-var delta_psi = [];
+var rotation_psi = [];
 var originalPosition = [];
 
 var objLoader = new THREE.OBJLoader();
@@ -54,12 +57,13 @@ objLoader.load('Test_snurra.obj', function (object) {
 	object.position.x = 1;
 	object.position.y -= 5;
 	object.position.z = 1;
-	scene.add(object);
 	originalPosition = [object.position.x, object.position.y, object.position.z];
-	console.log('Object.position: ' + object.position.y)
-	for (var i = 0; i < 10; ++i) {
+
+	parent.add(object);
+
+	for (var i = 0; i < 1000; ++i) {
 		psi[i + 1] = euler(psi[i], psi_dot, H);
-		//		console.log('Euler ger: ' + psi[i]);
+		//rotation_psi = ourRotationY(object, psi[i], originalPosition)
 
 		//delta_psi[i] = psi[i + 1] - psi[i];
 		//		console.log('Delta psi: ' + delta_psi[i]);
@@ -67,15 +71,17 @@ objLoader.load('Test_snurra.obj', function (object) {
 	}
 
 
-	setInterval(function () { ourRotationY(object, 3, originalPosition) }, 100);
-	//ourRotationY(object, psi, originalPosition)
+	//setInterval(function () { ourRotationY(object, 0.5, originalPosition) }, 100);
+
 
 
 });
 
-
+var k = 1;
 var animate = function () {
 	requestAnimationFrame(animate);
+
+	ourRotationY(parent, k++, originalPosition);
 
 	renderer.render(scene, camera);
 };

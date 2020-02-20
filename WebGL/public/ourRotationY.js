@@ -11,25 +11,25 @@ export function ourRotationY(object, angle, originalPosition) {
 
     var result = matrixMult(originalPosition, yRot);
     // console.log('Result rotation: ' + result)
-
+    console.log('Original: ' + yRot);
     //object.children["0"].geometry.attributes.position.array = result;
 
     object.position.set(result[0], result[1], result[2]);
 
-    console.log('Original: ' + originalPosition);
-    console.log('Result: ' + result);
+
+    // console.log('Result: ' + result);
 }
 
 function matrixMult(A, B) {
     var result = [];
 
-    console.log('A: ' + A);
-    console.log('B: ' + B);
+    //console.log('A: ' + A);
+    //console.log('B: ' + B);
 
     result[0] = A[0] * B[0][0] + A[1] * B[1][0] + A[2] * B[2][0];
     result[1] = A[0] * B[0][1] + A[1] * B[1][1] + A[2] * B[2][1];
     result[2] = A[0] * B[0][2] + A[1] * B[1][2] + A[2] * B[2][2];
 
-    console.log('Result matrixMult: ' + result)
+    // console.log('Result matrixMult: ' + result)
     return result;
 }
