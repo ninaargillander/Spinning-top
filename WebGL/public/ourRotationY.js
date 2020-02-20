@@ -1,5 +1,4 @@
 export function ourRotationY(object, angle, originalPosition) {
-    var position;
 
     var sin = Math.sin(angle);
     var cos = Math.cos(angle);
@@ -12,9 +11,9 @@ export function ourRotationY(object, angle, originalPosition) {
     var result = matrixMult(originalPosition, yRot);
     // console.log('Result rotation: ' + result)
     console.log('Original: ' + yRot);
-    //object.children["0"].geometry.attributes.position.array = result;
+    object.parent.children["3"].children["0"].children["0"].geometry.attributes.position.array = result + originalPosition;
 
-    object.position.set(result[0], result[1], result[2]);
+    // object.position.set(result[0], result[1], result[2]);
 
 
     // console.log('Result: ' + result);
