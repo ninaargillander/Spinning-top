@@ -4,7 +4,7 @@ import { psiRotation } from './psiRotation.js';
 import { axisAngle } from './axisAngle.js';
 
 var scene = new THREE.Scene();
-var container = new THREE.Group();
+var container = new THREE.Object3D();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var object = new THREE.Geometry();
 
@@ -64,13 +64,20 @@ objLoader.load('Test_snurra.obj', function (object) {
 	originalPosition = [object.position.x, object.position.y, object.position.z];
 
 	container.add(object);
-	console.log(container.children["0"].parent.up.x);
-	object.children["0"].parent.up.set(1, 1, 1)
 
-	console.log(container.children["0"].parent.up.x)
+	//
+	// Här har vi ett problem: vi borde kunna ändra variabeln .....up för att få snurran att vinklas mot 
+	// en viss punkt, dvs typ rotationsaxeln som vi vill ha. Nu kan vi vinkla den med axisAngle()
+	// men den roterar fortfarande kring världens y-axel (se psiRotation() för mer specifikt).
+	//
 
-	container.children["0"].parent.up.y = 0;
-	container.children["0"].parent.up.z = 0;
+	console.log(object.parent.children["0"].children["0"].up.x);
+	object.parent.children["0"].children["0"].up.x = 1;
+
+	console.log(object.parent.children["0"].children["0"].up.x)
+
+	object.parent.children["0"].children["0"].up.y = 0;
+	object.parent.children["0"].children["0"].up.z = 0;
 
 
 
@@ -87,7 +94,7 @@ var animate = function () {
 	//Uppdaterar 60 fps 
 	requestAnimationFrame(animate);
 
-	axisAngle(container, 10);
+	//axisAngle(container, 10);
 	psiRotation(container, psi[k]);
 
 	if (k == howManyPsi) k = 0;
