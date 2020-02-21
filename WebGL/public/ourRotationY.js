@@ -10,11 +10,8 @@ export function ourRotationY(object, angle, originalPosition) {
 
     var result = matrixMult(originalPosition, yRot);
     // console.log('Result rotation: ' + result)
-    //object.parent.children["3"].position.__proto__.applyAxisAngle([0, 1, 0], 2);
-    //object.parent.children["3"].rotation.x = result[0];
-    object.parent.children["3"].rotation.y = angle;
-    //    object.parent.children["3"].rotation.z = result[2];
-
+    console.log('Original: ' + yRot);
+    object.parent.children["3"].children["0"].children["0"].geometry.attributes.position.array = result + originalPosition;
 
     // object.position.set(result[0], result[1], result[2]);
 

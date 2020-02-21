@@ -57,6 +57,7 @@ var objLoader = new THREE.OBJLoader();
 objLoader.setPath('/assets/');
 objLoader.load('Test_snurra.obj', function (object) {
 	//Får ej stå i origo för att kunna beräkna rotation. 
+
 	object.position.x = 0;
 	object.position.y = 0;
 	object.position.z = 0;
@@ -64,10 +65,13 @@ objLoader.load('Test_snurra.obj', function (object) {
 
 	//originalPosition = object.children["0"].geometry.attributes.position.array;
 
+
 	//Vi vill komma åt object utanför denna load-funktion!!
 	container.add(object);
 
+
 	for (var i = 0; i < howManyPsi; ++i) {
+
 		psi[i + 1] = euler(psi[i], psi_dot, H);
 		//rotation_psi = ourRotationY(object, psi[i], originalPosition)
 
@@ -75,10 +79,13 @@ objLoader.load('Test_snurra.obj', function (object) {
 		//		console.log('Delta psi: ' + delta_psi[i]);
 
 	}
+
 	//setInterval(function () { ourRotationY(object, 0.5, originalPosition) }, 100);
 });
 
 var k = 0;
+
+
 
 var animate = function () {
 	requestAnimationFrame(animate);
@@ -88,7 +95,8 @@ var animate = function () {
 	//console.log('K: ' + k)
 	k++;
 
+
 	renderer.render(scene, camera);
 };
 
-animate();
+setTimeout(animate(), 100);
