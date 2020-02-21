@@ -57,7 +57,9 @@ objLoader.load('Test_snurra.obj', function (object) {
 	object.position.x = 1;
 	object.position.y = -9;
 	object.position.z = 1;
-	originalPosition = object.children["0"].geometry.attributes.position.array;
+	originalPosition = [object.position.x, object.position.y, object.position.z];
+
+	//originalPosition = object.children["0"].geometry.attributes.position.array;
 
 	//Vi vill komma åt object utanför denna load-funktion!!
 	container.add(object);
