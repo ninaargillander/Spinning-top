@@ -1,5 +1,6 @@
 import { euler } from './euler.js';
 import { ourRotationY } from './ourRotationY.js';
+import { psiRotation } from './psiRotation.js';
 
 var scene = new THREE.Scene();
 var container = new THREE.Group();
@@ -38,7 +39,7 @@ var delta_t = 1;
 var m = 0.5;
 var h = 0.04;
 var g = 9.82;
-var H = 0.001;
+var H = 1 / 60;
 
 var I3 = (3 * m * r * r) / 10;
 
@@ -50,13 +51,15 @@ psi[0] = 0;
 var rotation_psi = [];
 var originalPosition = [];
 
+var howManyPsi = 1000;
+
 var objLoader = new THREE.OBJLoader();
 objLoader.setPath('/assets/');
 objLoader.load('Test_snurra.obj', function (object) {
 	//Får ej stå i origo för att kunna beräkna rotation. 
-	object.position.x = 1;
-	object.position.y = -9;
-	object.position.z = 1;
+	object.position.x = 0;
+	object.position.y = 0;
+	object.position.z = 0;
 	originalPosition = [object.position.x, object.position.y, object.position.z];
 
 	//originalPosition = object.children["0"].geometry.attributes.position.array;
@@ -64,7 +67,7 @@ objLoader.load('Test_snurra.obj', function (object) {
 	//Vi vill komma åt object utanför denna load-funktion!!
 	container.add(object);
 
-	for (var i = 0; i < 1000; ++i) {
+	for (var i = 0; i < howManyPsi; ++i) {
 		psi[i + 1] = euler(psi[i], psi_dot, H);
 		//rotation_psi = ourRotationY(object, psi[i], originalPosition)
 
@@ -72,21 +75,20 @@ objLoader.load('Test_snurra.obj', function (object) {
 		//		console.log('Delta psi: ' + delta_psi[i]);
 
 	}
-
-
 	//setInterval(function () { ourRotationY(object, 0.5, originalPosition) }, 100);
-
-
-
 });
 
-var k = 0.1;
+var k = 0;
+
 var animate = function () {
 	requestAnimationFrame(animate);
 
-	ourRotationY(container, k += 0.1, originalPosition);
+	psiRotation(container, psi[k]);
+	if (k == howManyPsi) k = 0;
+	//console.log('K: ' + k)
+	k++;
 
 	renderer.render(scene, camera);
 };
 
-setTimeout(animate(), 100);
+animate();
