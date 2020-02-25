@@ -4,8 +4,9 @@ import { psiRotation } from './psiRotation.js';
 import { axisAngle } from './axisAngle.js';
 
 var scene = new THREE.Scene();
-var container = new THREE.Object3D();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var container = new THREE.Group();
+var containerChild = new THREE.Object3D();0
+var camera = new THREE.PerspectiveCamera(750, window.innerWidth / window.innerHeight, 0.1, 1000);
 var object = new THREE.Geometry();
 
 var renderer = new THREE.WebGLRenderer();
@@ -32,6 +33,7 @@ scene.add(fillLight);
 scene.add(backLight);
 
 scene.add(container);
+container.add(containerChild);
 
 //Ekvationer
 var F = 1;
@@ -56,14 +58,14 @@ var howManyPsi = 1000;
 
 var objLoader = new THREE.OBJLoader();
 objLoader.setPath('/assets/');
-objLoader.load('Test_snurra.obj', function (object) {
+objLoader.load('cyborg.obj', function (object) {
 
 	object.position.x = 0;
-	object.position.y = 0;
+	object.position.y = 3;
 	object.position.z = 0;
 	originalPosition = [object.position.x, object.position.y, object.position.z];
 
-	container.add(object);
+	containerChild.add(object);
 
 	//
 	// Här har vi ett problem: vi borde kunna ändra variabeln .....up för att få snurran att vinklas mot 
