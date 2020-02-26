@@ -33,32 +33,45 @@ scene.add(backLight);
 
 scene.add(container);
 
-//Ekvationer
-var F = 1;
-var r = 0.02;
-var delta_t = 1;
-var m = 0.5;
-var h = 0.04;
+//*******************Ekvationer*****************************//
+
+//Snurrans egenskaper
+var mass = 0.5;
+var radius = 0.02;
+var height = 0.04;
+var com = 3*height/4;
 var g = 9.82;
-var H = 1 / 60;
-var l = 3*h/4;
-var I1 = m * ((3/20)*r*r + (3/80)*h*h);
 
-var I3 = (3 * m * r * r) / 10;
+//Initial snurr
+var appliedForce = 1;
+var delta_t = 1;
 
-var psi_dot = (F * r * delta_t) / I3;
-var phi_dot = m*g*l/(psi_dot*I1);
+//Tröghetsmoment
+var I1 = mass * ((3/20)*radius*radius + (3/80)*height*height);
+var I3 = (3 * mass * radius * radius) / 10;
 
+//Beräkning av Euler-vinklar
+var stepLength = 1 / 60;
+var howManyPsi = 1000;
+
+//Psi
+var psi_dot = (appliedForce * radius * delta_t) / I3;
 var psi = [];
 psi[0] = 0;
 
+//Phi
+var phi_dot = mass*g*com/(psi_dot*I1);
 var phi = [];
 phi[0] = 0;
 
-var rotation_psi = [];
-var originalPosition = [];
 
-var howManyPsi = 1000;
+//Eulervinklar
+for (var i = 0; i < howManyPsi; ++i) {
+    psi[i + 1] = euler(psi[i], psi_dot, stepLength);
+    phi[i + 1] = euler(phi[i], phi_dot, stepLength);
+}
+//*****************************************************************//
+
 
 var objLoader = new THREE.OBJLoader();
 objLoader.setPath('/assets/');
@@ -67,14 +80,8 @@ objLoader.load('cyborg.obj', function (object) {
 	object.position.x = 0;
 	object.position.y = 0;
 	object.position.z = 0;
-	originalPosition = [object.position.x, object.position.y, object.position.z];
 
 	container.add(object);
-
-	for (var i = 0; i < howManyPsi; ++i) {
-	    psi[i + 1] = euler(psi[i], psi_dot, H);
-	    phi[i + 1] = euler(phi[i], phi_dot, H);
-	}
 
 });
 
