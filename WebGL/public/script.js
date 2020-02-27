@@ -16,7 +16,7 @@ document.body.appendChild(renderer.domElement);
 //var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 camera.position.z = 20;
-camera.position.y = 5;
+camera.position.y = 0; //fem för snurran
 
 var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
 keyLight.position.set(-100, 100, 100);
