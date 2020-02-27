@@ -1,58 +1,74 @@
-F = 1;
-m = 0.013;
-r = 0.02;
-h = 0.07;
-g = 9.82;
-delta_t = 1;
-l = 3*h/4;
-my = 0.48;
-Friction = -1 * my * m * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
+% Definiera alla konstanter
+F = 1;              % Kraften som appliceras
+mass = 0.013;       % Snurrans massa
+r = 0.02;           % Snurrans radie (längst upp)
+h = 0.07;           % Snurrans höjd
+g = 9.82;           % Gravitationskonstanten
+delta_t = 0.01;     % Tiden under vilken en kraft appliceras
+com = 3*h/4;        % Avståndet till masscentrum
+Fric_coeff = 0.48;  % Friktionskoefficient för ek mot ek
+Friction = -1 * Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
 r_contact = 0.001;  % Radien på kontaktpunkten?
 
-I1 = m * ((3/20)*r*r + (3/80)*h*h);
-I3 = (3*m*r*r)/10;
+I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
+I3 = (3*mass*r*r)/10;                   % Tröghetsmoment när rak
 
-psi_dot_dot = Friction * l / I3;
-psi_dot(1) = F*r*delta_t/I3;
-phi_dot(1) = m*g*l/(psi_dot(1)*I1);
+% Beräkna psi_dot och gränsen för psi_dot
+psi_dot = F*r*delta_t/I3;
+psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);
 
-psi_dot_limit = 4*I1*m*g*cos(pi/12) / (I3*I3);
+% Beräkna phi_dot
+phi_dot(1) = mass*g*com/(psi_dot*I1);
 
-H=0.001; % step's size
+% Beräkna theta och theta_dot
+theta_dot(1) = Friction * com / (I3*psi_dot); 
+theta(1) = 0;
+
+H=0.01; % step's size
 N=1000; % number of steps
+
+% Startvärden för psi och phi
 psi(1) = 0;
 phi(1) = 0;
 
+% For-loop för att beräkna allt möjligt med hjälp av Euler (eller tidigare
+% vinklar)
 for n=1:N
-    psi_dot(n+1) = Euler(psi_dot(n), psi_dot_dot, H);
-    phi_dot(n+1) = m*g*l/(psi_dot(n+1)*I1);
-        
-    if psi_dot(n+1) * psi_dot(n+1) < psi_dot_limit
-       psi_dot(n+1) = 0;
-       phi_dot(n+1) = 0;
-    end
+    theta(n+1) = Euler(theta(n), theta_dot(n), H);
+    phi_dot(n+1) = mass * g * com / (psi_dot*I1);
     
-    psi(n+1) = Euler(psi(n), psi_dot(n), H);
+    theta_dot(n+1) = Friction * com / (I3*psi_dot);
+        
+%     psi_dot_limit = 4*I1*mass*g*cos(theta(n+1)) / (I3*I3);
+%     
+%     if (psi_dot + phi_dot(n+1)*cos(theta(n+1)))^2 < psi_dot_limit
+%        psi_dot = 0;
+%        phi_dot(n+1) = 0;
+%        theta_dot(n+1) = 0;
+%     end
+    
+    psi(n+1) = Euler(psi(n), psi_dot, H);
     phi(n+1) = Euler(phi(n), phi_dot(n), H);
 end
 
-% Detta resultat stämmer verkligen inte, men kanske är lite på väg i alla
-% fall. Graferna blir i alla fall lite spännande!
+% Plotta resultaten från loopen ovan.
 t = 1:H:H*N+1;
-plot(t,mod(psi, 2*pi),'r');
+plot(t,mod(psi,2*pi),'r');
 figure;
 plot(t,mod(phi,2*pi),'r');
 figure;
-plot(t,psi_dot,'r');
+plot(t,theta,'r');
 figure;
 plot(t,phi_dot,'r');
+figure;
+plot(t,theta_dot,'r');
 
 % Märkte när jag körde denna nedan att mittensnurren ändrar riktning efter en
 % stund och börjar gå åt andra hållet. Vet ej vad det beror på. Den andra
 % rör sig jättesakta, känns inte heller så bra.
-
+% 
 % for n =1:N
-%     plot(r*cos(psi(n)), r*sin(psi(n)), 'x');
+%     plot(r*cos(psi(n)), r*sin(psi(n)), '*');
 %     axis([-1 1 -1 1]);
 %     hold on;
 %     plot(cos(phi(n)), sin(phi(n)), '*');
