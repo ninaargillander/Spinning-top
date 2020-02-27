@@ -32,6 +32,9 @@ scene.add(keyLight);
 scene.add(fillLight);
 scene.add(backLight);
 
+var texture =
+	scene.background = texture;
+
 var floorPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
 //var floorMaterial = new THREE.MeshBasicMaterial();
 
@@ -45,9 +48,21 @@ floorTexture.repeat.set(2, 2);
 var floor = new THREE.Mesh(floorPlane, floorMaterial);
 floor.rotateX(-Math.PI / 2);
 
+var skyPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
+//var floorMaterial = new THREE.MeshBasicMaterial();
+
+var skyTexture = textureLoader.load('/img/sky.jpg');
+var skyMaterial = new THREE.MeshPhongMaterial({ map: skyTexture });
+
+//skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping;
+//skyTexture.repeat.set(2, 2);
+
+var sky = new THREE.Mesh(skyPlane, skyMaterial);
+sky.position.set(0, 0, -25)
 
 scene.add(mainContainer);
 mainContainer.add(container);
+scene.add(sky)
 scene.add(floor);
 
 //*******************Ekvationer*****************************//
@@ -61,7 +76,7 @@ var g = 9.82;
 
 //Initial snurr
 var appliedForce = 1;
-var delta_t = 1;
+var delta_t = 0.01;
 
 //Tröghetsmoment
 var I1 = mass * ((3 / 20) * radius * radius + (3 / 80) * height * height);
@@ -90,17 +105,25 @@ for (var i = 0; i < howManyPsi; ++i) {
 //*****************************************************************//
 
 
-var objLoader = new THREE.OBJLoader();
-objLoader.setPath('/assets/');
-objLoader.load('test_snurra.obj', function (object) {
+var mtlLoader = new THREE.MTLLoader();
+//mtlLoader.setTexturePath('/assets/');
+//mtlLoader.setPath('/assets/');
+mtlLoader.load('/assets/snurrSnurr.mtl', function (materials) {
+	materials.preload();
 
-	object.position.x = 0;
-	object.position.y = 0;
-	object.position.z = 0;
+	var objLoader = new THREE.OBJLoader();
+	objLoader.setMaterials(materials);
+	//objLoader.setPath('/assets/');
+	objLoader.load('/assets/snurrSnurr.obj', function (object) {
 
-	container.add(object);
+		object.position.x = 0;
+		object.position.y = 2;
+		object.position.z = 0;
 
-});
+		container.add(object);
+
+	});
+})
 
 var k = 0;
 
