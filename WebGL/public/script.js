@@ -1,10 +1,11 @@
 import { euler } from './euler.js';
-import { ourRotationY } from './ourRotationY.js';
 import { psiRotation } from './psiRotation.js';
+import { precession } from './precession.js';
+import { thetaRotation } from './thetaRotation.js';
 
 var scene = new THREE.Scene();
 var container = new THREE.Group();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(750, window.innerWidth / window.innerHeight, 0.1, 1000); //75 för snurran, 750 för cyborg
 var object = new THREE.Geometry();
 
 var renderer = new THREE.WebGLRenderer();
@@ -15,7 +16,7 @@ document.body.appendChild(renderer.domElement);
 //var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 camera.position.z = 20;
-camera.position.y = 5;
+camera.position.y = 0; //fem för snurran
 
 var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
 keyLight.position.set(-100, 100, 100);
@@ -32,69 +33,72 @@ scene.add(backLight);
 
 scene.add(container);
 
-//Ekvationer
-var F = 1;
-var r = 0.02;
-var delta_t = 1;
-var m = 0.5;
-var h = 0.04;
+//*******************Ekvationer*****************************//
+
+//Snurrans egenskaper
+var mass = 0.5;
+var radius = 0.02;
+var height = 0.04;
+var com = 3*height/4;
 var g = 9.82;
-var H = 1 / 60;
 
-var I3 = (3 * m * r * r) / 10;
+//Initial snurr
+var appliedForce = 1;
+var delta_t = 1;
 
-var psi_dot = (F * r * delta_t) / I3;
+//Tröghetsmoment
+var I1 = mass * ((3/20)*radius*radius + (3/80)*height*height);
+var I3 = (3 * mass * radius * radius) / 10;
 
+//Beräkning av Euler-vinklar
+var stepLength = 1 / 60;
+var howManyPsi = 1000;
+
+//Psi
+var psi_dot = (appliedForce * radius * delta_t) / I3;
 var psi = [];
 psi[0] = 0;
 
-var rotation_psi = [];
-var originalPosition = [];
+//Phi
+var phi_dot = mass*g*com/(psi_dot*I1);
+var phi = [];
+phi[0] = 0;
 
-var howManyPsi = 1000;
+
+//Eulervinklar
+for (var i = 0; i < howManyPsi; ++i) {
+    psi[i + 1] = euler(psi[i], psi_dot, stepLength);
+    phi[i + 1] = euler(phi[i], phi_dot, stepLength);
+}
+//*****************************************************************//
+
 
 var objLoader = new THREE.OBJLoader();
 objLoader.setPath('/assets/');
-objLoader.load('Test_snurra.obj', function (object) {
-	//Får ej stå i origo för att kunna beräkna rotation. 
+objLoader.load('cyborg.obj', function (object) {
 
 	object.position.x = 0;
 	object.position.y = 0;
 	object.position.z = 0;
-	originalPosition = [object.position.x, object.position.y, object.position.z];
 
-	//originalPosition = object.children["0"].geometry.attributes.position.array;
-
-
-	//Vi vill komma åt object utanför denna load-funktion!!
 	container.add(object);
 
-
-	for (var i = 0; i < howManyPsi; ++i) {
-
-		psi[i + 1] = euler(psi[i], psi_dot, H);
-		//rotation_psi = ourRotationY(object, psi[i], originalPosition)
-
-		//delta_psi[i] = psi[i + 1] - psi[i];
-		//		console.log('Delta psi: ' + delta_psi[i]);
-
-	}
-
-	//setInterval(function () { ourRotationY(object, 0.5, originalPosition) }, 100);
 });
 
 var k = 0;
 
-
-
 var animate = function () {
+	//Uppdaterar 60 fps 
 	requestAnimationFrame(animate);
 
+	//axisAngle(container, 10);
 	psiRotation(container, psi[k]);
+	precession(container, phi[k]);
+	thetaRotation(container, 0.4);
+
 	if (k == howManyPsi) k = 0;
 	//console.log('K: ' + k)
 	k++;
-
 
 	renderer.render(scene, camera);
 };
