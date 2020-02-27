@@ -4,7 +4,8 @@ import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
 
 var scene = new THREE.Scene();
-var container = new THREE.Group();
+var container = new THREE.Object3D();
+var mainContainer = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); //75 för snurran, 750 för cyborg
 //var object = new THREE.Geometry();
 
@@ -34,7 +35,6 @@ scene.add(backLight);
 var floorPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
 //var floorMaterial = new THREE.MeshBasicMaterial();
 
-
 var textureLoader = new THREE.TextureLoader();
 var floorTexture = textureLoader.load('/assets/floor.jpg');
 var floorMaterial = new THREE.MeshPhongMaterial({ map: floorTexture });
@@ -46,7 +46,8 @@ var floor = new THREE.Mesh(floorPlane, floorMaterial);
 floor.rotateX(-Math.PI / 2);
 
 
-scene.add(container);
+scene.add(mainContainer);
+mainContainer.add(container);
 scene.add(floor);
 
 //*******************Ekvationer*****************************//
@@ -109,8 +110,8 @@ var animate = function () {
 
 	//axisAngle(container, 10);
 	psiRotation(container, psi[k]);
-	//precession(container, phi[k]);
-	//thetaRotation(container, 0.4);
+	precession(container, phi[k]);
+	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
 	//console.log('K: ' + k)
