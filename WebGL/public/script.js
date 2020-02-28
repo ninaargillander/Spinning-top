@@ -3,6 +3,8 @@ import { psiRotation } from './psiRotation.js';
 import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
 
+
+//*********************Skapar scenen************************//
 var scene = new THREE.Scene();
 var container = new THREE.Object3D();
 var mainContainer = new THREE.Group();
@@ -38,8 +40,9 @@ fillLight.shadowCameraTop = 50;
 fillLight.shadowCameraBottom = -50;
 
 scene.add(fillLight);
+//**********************************************************//
 
-//*******************Miljö*****************************//
+//************************Miljö*****************************//
 
 var textureLoader = new THREE.TextureLoader();
 
@@ -117,7 +120,11 @@ for (var i = 0; i < howManyPsi; ++i) {
 //*****************************************************************//
 
 
-//Läs in snurran med textur
+//******************Läs in snurran med textur*********************//
+
+// MTLLoader includeras genom assets/MTLLoader.js
+// MTLLoader krävs för att ladda in texturen till snurran
+// Koden är skriven av @author angelxuanchang
 var mtlLoader = new THREE.MTLLoader();
 mtlLoader.setTexturePath('/assets/');
 mtlLoader.setPath('/assets/');
@@ -125,6 +132,9 @@ mtlLoader.load('spintop.mtl', function (materials) {
 
 	materials.preload();
 
+	// OBJLoader includeras genom assets/OBJLoader.js
+	// OBJLoader laddar in snurran som ett objekt
+	// Koden är skriven av @author mrdoob / http://mrdoob.com/
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
 	objLoader.setPath('/assets/');
@@ -141,7 +151,7 @@ mtlLoader.load('spintop.mtl', function (materials) {
 
 	});
 })
-
+//****************************************************************//
 var k = 0;
 
 var animate = function () {
