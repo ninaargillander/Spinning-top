@@ -3,11 +3,11 @@ F = 1;              % Kraften som appliceras
 mass = 0.013;       % Snurrans massa
 r = 0.02;           % Snurrans radie (längst upp)
 h = 0.07;           % Snurrans höjd
-g = -9.82;           % Gravitationskonstanten
+g = 9.82;           % Gravitationskonstanten
 delta_t = 0.01;     % Tiden under vilken en kraft appliceras
 com = 3*h/4;        % Avståndet till masscentrum
 Fric_coeff = 0.48;  % Friktionskoefficient för ek mot ek
-Friction = Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
+Friction = -1 * Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
 r_contact = 0.001;  % Radien på kontaktpunkten?
 
 I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
@@ -15,14 +15,14 @@ I3 = (3*mass*r*r)/10;                   % Tröghetsmoment när rak
 
 % Beräkna psi_dot och gränsen för psi_dot
 psi_dot = F*r*delta_t/I3;
-% psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);   theta_dot(n+1) = Friction * com / (I3*W3(n+1));
+% psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);
 
 % Beräkna phi_dot
 phi_dot = mass*g*com/(psi_dot*I1);
 
 % Beräkna theta och theta_dot
 theta_dot(1) = Friction * com / (I3*psi_dot); 
-theta(1) = 0;
+theta(1) = pi / 2;
 
 % Beräkna rörelsemängdsmoment
 L(1) = I3 * psi_dot;
@@ -41,16 +41,18 @@ W3(1) = psi_dot;
 % For-loop för att beräkna allt möjligt med hjälp av Euler (eller tidigare
 % vinklar)
 for n=1:N
-   theta(n+1) = Euler(theta(n), theta_dot(n), H);
+    theta(n+1) = Euler(theta(n), theta_dot, H);
    % phi_dot(n+1) = mass * g * com / (psi_dot*I1);
+    
+   theta_dot(n+1) = Friction * com / (I3*W3(n);
         
    T(n+1) = mass * g * com * sin(theta(n+1));
    
    L(n+1) = Euler(L(n), T(n), H);
    
-   W3(n+1) = L(n+1) / I1;
+   W3_dot(n) = L(n) / I3;
    
-   theta_dot(n+1) = Friction * com / (I3*psi_dot);
+   W3(n+1) = Euler(W3(n), W3_dot(n), H);
    
 %     psi_dot_limit = 4*I1*mass*g*cos(theta(n+1)) / (I3*I3);
 %     
