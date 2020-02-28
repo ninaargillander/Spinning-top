@@ -124,7 +124,7 @@ for (var i = 0; i < howManyPsi; ++i) {
 
 // MTLLoader includeras genom assets/MTLLoader.js
 // MTLLoader krävs för att ladda in texturen till snurran
-// Koden är skriven av @author angelxuanchang
+// Koden i MTLLoader.js är skriven av @author angelxuanchang
 var mtlLoader = new THREE.MTLLoader();
 mtlLoader.setTexturePath('/assets/');
 mtlLoader.setPath('/assets/');
@@ -134,7 +134,7 @@ mtlLoader.load('spintop.mtl', function (materials) {
 
 	// OBJLoader includeras genom assets/OBJLoader.js
 	// OBJLoader laddar in snurran som ett objekt
-	// Koden är skriven av @author mrdoob / http://mrdoob.com/
+	// Koden i OBJLoader.js är skriven av @author mrdoob / http://mrdoob.com/
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
 	objLoader.setPath('/assets/');
