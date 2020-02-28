@@ -1,71 +1,93 @@
 % Definiera alla konstanter
-F = 1;              % Kraften som appliceras
-mass = 0.013;       % Snurrans massa
-r = 0.02;           % Snurrans radie (längst upp)
-h = 0.07;           % Snurrans höjd
+F = 0.9;              % Kraften som appliceras
+mass = 0.123;       % Snurrans massa
+r = 0.04;           % Snurrans radie (längst upp)
 g = -9.82;           % Gravitationskonstanten
-delta_t = 0.01;     % Tiden under vilken en kraft appliceras
-com = 3*h/4;        % Avståndet till masscentrum
-Fric_coeff = 0.48;  % Friktionskoefficient för ek mot ek
+delta_t = 0.18;     % Tiden under vilken en kraft appliceras
+com = 0.04;        % Avståndet till masscentrum
+h = 4*com/3;           % Snurrans höjd
+Fric_coeff = 0.006;  % Friktionskoefficient för ek mot ek
 Friction = Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
-r_contact = 0.001;  % Radien på kontaktpunkten?
 
 I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
 I3 = (3*mass*r*r)/10;                   % Tröghetsmoment när rak
 
-% Beräkna psi_dot och gränsen för psi_dot
+% Beräkna psi_dot
 psi_dot = F*r*delta_t/I3;
-% psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);   theta_dot(n+1) = Friction * com / (I3*W3(n+1));
+
+% psi_dot_dot(1) = -mass*g*com*sin(theta(1)) / I3;
+% psi_dot(1) = F*r*delta_t/I3;
+% psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);
 
 % Beräkna phi_dot
-phi_dot = mass*g*com/(psi_dot*I1);
+phi_dot = -mass*g*com/(psi_dot*I1);
+
+% phi_dot(1) = -mass*g*com/(psi_dot(1)*I1);
 
 % Beräkna theta och theta_dot
-theta_dot(1) = Friction * com / (I3*psi_dot); 
-theta(1) = 0;
+theta_dot = Friction * com / (I3*psi_dot);
+theta(1) = pi / 2; % theta = pi/2 ty står upprätt
 
-% Beräkna rörelsemängdsmoment
-L(1) = I3 * psi_dot;
+% theta_dot(1) = Friction * com / (I3*psi_dot(1));
 
-% Beräkna kraftmomentet
-T(1) = mass * g * com * sin(theta(1));
+
+% % Beräkna rörelsemängdsmoment
+% L(1) = I3 * psi_dot;
+% 
+% % Beräkna kraftmomentet
+% T(1) = mass * g * com * sin(theta(1));
 
 H=0.01; % step's size
-N=1000; % number of steps
+N=5000; % number of steps
 
 % Startvärden för psi och phi
 psi(1) = 0;
 phi(1) = 0;
-W3(1) = psi_dot;
 
 % For-loop för att beräkna allt möjligt med hjälp av Euler (eller tidigare
 % vinklar)
 for n=1:N
-   theta(n+1) = Euler(theta(n), theta_dot(n), H);
-   % phi_dot(n+1) = mass * g * com / (psi_dot*I1);
+    
+    theta(n+1) = Euler(theta(n), theta_dot, H);
+    
+%     theta(n+1) = Euler(theta(n), theta_dot(n), H);
+%     psi_dot_dot(n+1) = -mass*g*com*sin(theta(n+1)) / I3;
+%     psi_dot(n+1) = Euler(psi_dot(n), psi_dot_dot(n), H);
+%     phi_dot(n+1) = mass * g * com / (psi_dot(n+1)*I1);
+%     theta_dot(n+1) = Friction * com / (I3*psi_dot(n+1));
+    
+%    T(n+1) = mass * g * com * sin(theta(n+1));
+%    
+%    L(n+1) = Euler(L(n), T(n), H);
+%    
+%    W3(n+1) = L(n+1) / I1;
+
+%    W3(n) = psi_dot(n) + phi_dot(n)*cos(theta(n));
+
+    W3(n) = psi_dot + phi_dot*cos(theta(n));
+
+    % Denna gräns fungerar inte direkt
+    W3_limit(n) = 4*I1*com*mass*g*cos(theta(n)) / (I3*I3);
+    
+    if W3(n) * W3(n) < W3_limit(n) || theta(n) < 0
+       psi_dot = 0;
+       phi_dot = 0;
+       theta_dot = 0;
         
-   T(n+1) = mass * g * com * sin(theta(n+1));
-   
-   L(n+1) = Euler(L(n), T(n), H);
-   
-   W3(n+1) = L(n+1) / I1;
-   
-   theta_dot(n+1) = Friction * com / (I3*psi_dot);
-   
-%     psi_dot_limit = 4*I1*mass*g*cos(theta(n+1)) / (I3*I3);
-%     
-%     if W3(n) < psi_dot_limit
-%        psi_dot = 0;
-%        phi_dot = 0;
-%        theta_dot = 0;
-%     end
+%        psi_dot(n) = 0;
+%        phi_dot(n) = 0;
+%        theta_dot(n) = 0;
+    end
     
     psi(n+1) = Euler(psi(n), psi_dot, H);
     phi(n+1) = Euler(phi(n), phi_dot, H);
+    
+%     psi(n+1) = Euler(psi(n), psi_dot(n), H);
+%     phi(n+1) = Euler(phi(n), phi_dot(n), H);
 end
 
 % Plotta resultaten från loopen ovan.
-t = 1:H:H*N+1;
+t = 0:H:H*N;
 plot(t,mod(psi,2*pi),'r');
 title('Psi');
 figure;
