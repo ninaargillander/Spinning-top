@@ -7,49 +7,78 @@ var scene = new THREE.Scene();
 var container = new THREE.Object3D();
 var mainContainer = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); //75 för snurran, 750 för cyborg
-//var object = new THREE.Geometry();
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-//var geometry = new THREE.BoxGeometry(1, 1, 1);
-//var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+//Skugga
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+
 
 camera.position.z = 20;
 camera.position.y = 5; //fem för snurran
 
-var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
-keyLight.position.set(-100, 100, 100);
+var box = new THREE.BoxGeometry(3, 3, 3);
+var boxMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+var cube = new THREE.Mesh(box, boxMaterial);
+cube.position.set(0, 3, 0)
 
-var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
-fillLight.position.set(100, 0, 100);
+cube.castShadow = true;
+cube.receiveShadow = true;
 
-var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
-backLight.position.set(100, 0, -100).normalize();
+scene.add(cube);
 
-scene.add(keyLight);
+
+var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(210, 100%, 75%)'), 0.75);
+fillLight.position.set(0, 10, 0);
+//fillLight.target.position.set(0, 0, 0);
+
+var backLight = new THREE.HemisphereLight(new THREE.Color('hsl(34, 45%, 80%)'), new THREE.Color('hsl(30, 38%, 50%)'), 1);
+
+fillLight.castShadow = true;
+//skugga
+fillLight.castShadow = true;
+fillLight.shadowDarkness = 0.5;
+
+fillLight.shadowCameraNear = 15;
+fillLight.shadowCameraFar = -10;
+
+fillLight.shadow.bias = 0.0001;
+
+fillLight.shadow.mapSize.width = 1024;
+fillLight.shadow.mapSize.height = 1024;
+
+/*
+fillLight.shadowCameraRight = 5;
+fillLight.shadowCameraLeft = -5;
+fillLight.shadowCameraTop = 5;
+fillLight.shadowCameraBottom = -5;
+
+*/
+
 scene.add(fillLight);
 scene.add(backLight);
 
 var textureLoader = new THREE.TextureLoader();
 
 //Skapar golv och textur
-var floorPlane = new THREE.PlaneBufferGeometry(200, 100, 100);
-var floorTexture = textureLoader.load('/assets/floor.jpg');
+var floorPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
+var floorTexture = textureLoader.load('/img/ten.jpg');
 var floorMaterial = new THREE.MeshPhongMaterial({ map: floorTexture });
 
 //Skapar "himmel" och textur
-var skyPlane = new THREE.PlaneBufferGeometry(200, 200, 200);
-var skyTexture = textureLoader.load('/img/blueSky.jpg');
+var skyPlane = new THREE.PlaneBufferGeometry(150, 150, 150);
+var skyTexture = textureLoader.load('/img/nz.jpg');
 var skyMaterial = new THREE.MeshPhongMaterial({ map: skyTexture });
 
 //Textur ska repeatas
-skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping;
-skyTexture.repeat.set(2, 2);
-
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-floorTexture.repeat.set(2, 2);
+floorTexture.repeat.set(8, 8);
+
+skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping;
+//skyTexture.repeat.set(5, 5);
 
 //Skapa mesh av planen med textur
 var sky = new THREE.Mesh(skyPlane, skyMaterial);
@@ -58,11 +87,22 @@ sky.position.set(0, 0, -25)
 var floor = new THREE.Mesh(floorPlane, floorMaterial);
 floor.rotateX(-Math.PI / 2);
 
+
 scene.add(mainContainer);
 mainContainer.add(container);
 scene.add(sky)
 scene.add(floor);
 
+//floor.recieveShadow = true;
+
+floor.receiveShadow = true;
+
+//ta bort 
+scene.add(new THREE.CameraHelper(camera))
+var helper = new THREE.CameraHelper(fillLight.shadow.camera);
+scene.add(helper);
+
+console.log(fillLight);
 //*******************Ekvationer*****************************//
 
 //Snurrans egenskaper
@@ -73,7 +113,7 @@ var com = 3 * height / 4;
 var g = 9.82;
 
 //Initial snurr
-var appliedForce = 0.5;
+var appliedForce = 1;
 var delta_t = 0.01;
 
 //Tröghetsmoment
@@ -102,38 +142,36 @@ for (var i = 0; i < howManyPsi; ++i) {
 }
 //*****************************************************************//
 
-
+/*
 var mtlLoader = new THREE.MTLLoader();
 mtlLoader.setTexturePath('/assets/');
 mtlLoader.setPath('/assets/');
-mtlLoader.load('Snurran5.mtl', function (materials) {
+mtlLoader.load('spintop.mtl', function (materials) {
 	materials.preload();
 
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
 	objLoader.setPath('/assets/');
-	objLoader.load('Snurran5.obj', function (object) {
-		/* 	object.scale.x = 0.1;
-			object.scale.y = 0.1;
-			object.scale.z = 0.1;
-	 */
+	objLoader.load('spintop.obj', function (object) {
 
 		object.position.x = 0;
 		object.position.y = 2;
 		object.position.z = 0;
 
+		object.castShadow = true;
+		object.recieveShadow = false;
+
 		container.add(object);
 
 	});
 })
-
+*/
 var k = 0;
 
 var animate = function () {
 	//Uppdaterar 60 fps 
 	requestAnimationFrame(animate);
 
-	//axisAngle(container, 10);
 	psiRotation(container, psi[k]);
 	precession(container, phi[k]);
 	thetaRotation(container, 0.4);
