@@ -1,17 +1,25 @@
 % Definiera alla konstanter
+% Sätter igång snurran
 F = 0.9;              % Kraften som appliceras
+delta_t = 0.18;     % Tiden under vilken en kraft appliceras
+
+% Snurrans egenskaper
 mass = 0.123;       % Snurrans massa
 r = 0.04;           % Snurrans radie (längst upp)
-g = -9.82;           % Gravitationskonstanten
-delta_t = 0.18;     % Tiden under vilken en kraft appliceras
-com = 0.04;        % Avståndet till masscentrum
 h = 4*com/3;           % Snurrans höjd
+com = 0.04;        % Avståndet till masscentrum
+g = -9.82;           % Gravitationskonstanten
+
+
+% Trögehtsmoment
+I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
+I3 = (3*mass*r*r)/10; % Tröghetsmoment när rak (Vertikal om underlaget)
+
+% Friktion
 Fric_coeff = 0.006;  % Friktionskoefficient för ek mot ek
 Friction = Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
 
-I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
-I3 = (3*mass*r*r)/10;                   % Tröghetsmoment när rak
-
+                  
 % Beräkna psi_dot
 psi_dot = F*r*delta_t/I3;
 
