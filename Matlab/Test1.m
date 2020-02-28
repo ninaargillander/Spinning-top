@@ -3,11 +3,11 @@ F = 1;              % Kraften som appliceras
 mass = 0.013;       % Snurrans massa
 r = 0.02;           % Snurrans radie (längst upp)
 h = 0.07;           % Snurrans höjd
-g = 9.82;           % Gravitationskonstanten
+g = -9.82;           % Gravitationskonstanten
 delta_t = 0.01;     % Tiden under vilken en kraft appliceras
 com = 3*h/4;        % Avståndet till masscentrum
 Fric_coeff = 0.48;  % Friktionskoefficient för ek mot ek
-Friction = -1 * Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
+Friction = Fric_coeff * mass * g; % Frictionskraften, negativ normalkraft gånger friktionkoefficient
 r_contact = 0.001;  % Radien på kontaktpunkten?
 
 I1 = mass * ((3/20)*r*r + (3/80)*h*h);  % Tröghetsmoment vid lutning
@@ -15,14 +15,20 @@ I3 = (3*mass*r*r)/10;                   % Tröghetsmoment när rak
 
 % Beräkna psi_dot och gränsen för psi_dot
 psi_dot = F*r*delta_t/I3;
-psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);
+% psi_dot_limit = 4*I1*mass*g*cos(theta(1)) / (I3*I3);   theta_dot(n+1) = Friction * com / (I3*W3(n+1));
 
 % Beräkna phi_dot
-phi_dot(1) = mass*g*com/(psi_dot*I1);
+phi_dot = mass*g*com/(psi_dot*I1);
 
 % Beräkna theta och theta_dot
 theta_dot(1) = Friction * com / (I3*psi_dot); 
 theta(1) = 0;
+
+% Beräkna rörelsemängdsmoment
+L(1) = I3 * psi_dot;
+
+% Beräkna kraftmomentet
+T(1) = mass * g * com * sin(theta(1));
 
 H=0.01; % step's size
 N=1000; % number of steps
@@ -30,38 +36,48 @@ N=1000; % number of steps
 % Startvärden för psi och phi
 psi(1) = 0;
 phi(1) = 0;
+W3(1) = psi_dot;
 
 % For-loop för att beräkna allt möjligt med hjälp av Euler (eller tidigare
 % vinklar)
 for n=1:N
-    theta(n+1) = Euler(theta(n), theta_dot(n), H);
-    phi_dot(n+1) = mass * g * com / (psi_dot*I1);
-    
-    theta_dot(n+1) = Friction * com / (I3*psi_dot);
+   theta(n+1) = Euler(theta(n), theta_dot(n), H);
+   % phi_dot(n+1) = mass * g * com / (psi_dot*I1);
         
+   T(n+1) = mass * g * com * sin(theta(n+1));
+   
+   L(n+1) = Euler(L(n), T(n), H);
+   
+   W3(n+1) = L(n+1) / I1;
+   
+   theta_dot(n+1) = Friction * com / (I3*psi_dot);
+   
 %     psi_dot_limit = 4*I1*mass*g*cos(theta(n+1)) / (I3*I3);
 %     
-%     if (psi_dot + phi_dot(n+1)*cos(theta(n+1)))^2 < psi_dot_limit
+%     if W3(n) < psi_dot_limit
 %        psi_dot = 0;
-%        phi_dot(n+1) = 0;
-%        theta_dot(n+1) = 0;
+%        phi_dot = 0;
+%        theta_dot = 0;
 %     end
     
     psi(n+1) = Euler(psi(n), psi_dot, H);
-    phi(n+1) = Euler(phi(n), phi_dot(n), H);
+    phi(n+1) = Euler(phi(n), phi_dot, H);
 end
 
 % Plotta resultaten från loopen ovan.
 t = 1:H:H*N+1;
 plot(t,mod(psi,2*pi),'r');
+title('Psi');
 figure;
 plot(t,mod(phi,2*pi),'r');
+title('Phi');
 figure;
 plot(t,theta,'r');
-figure;
-plot(t,phi_dot,'r');
-figure;
-plot(t,theta_dot,'r');
+title('Theta');
+% figure;
+% plot(t,phi_dot,'r');
+% figure;
+% plot(t,theta_dot,'r');
 
 % Märkte när jag körde denna nedan att mittensnurren ändrar riktning efter en
 % stund och börjar gå åt andra hållet. Vet ej vad det beror på. Den andra
