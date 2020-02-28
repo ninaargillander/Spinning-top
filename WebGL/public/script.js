@@ -32,33 +32,31 @@ scene.add(keyLight);
 scene.add(fillLight);
 scene.add(backLight);
 
-var texture =
-	scene.background = texture;
-
-var floorPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
-//var floorMaterial = new THREE.MeshBasicMaterial();
-
 var textureLoader = new THREE.TextureLoader();
+
+//Skapar golv och textur
+var floorPlane = new THREE.PlaneBufferGeometry(200, 100, 100);
 var floorTexture = textureLoader.load('/assets/floor.jpg');
 var floorMaterial = new THREE.MeshPhongMaterial({ map: floorTexture });
+
+//Skapar "himmel" och textur
+var skyPlane = new THREE.PlaneBufferGeometry(200, 200, 200);
+var skyTexture = textureLoader.load('/img/blueSky.jpg');
+var skyMaterial = new THREE.MeshPhongMaterial({ map: skyTexture });
+
+//Textur ska repeatas
+skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping;
+skyTexture.repeat.set(2, 2);
 
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(2, 2);
 
-var floor = new THREE.Mesh(floorPlane, floorMaterial);
-floor.rotateX(-Math.PI / 2);
-
-var skyPlane = new THREE.PlaneBufferGeometry(100, 100, 100);
-//var floorMaterial = new THREE.MeshBasicMaterial();
-
-var skyTexture = textureLoader.load('/img/sky.jpg');
-var skyMaterial = new THREE.MeshPhongMaterial({ map: skyTexture });
-
-//skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping;
-//skyTexture.repeat.set(2, 2);
-
+//Skapa mesh av planen med textur
 var sky = new THREE.Mesh(skyPlane, skyMaterial);
 sky.position.set(0, 0, -25)
+
+var floor = new THREE.Mesh(floorPlane, floorMaterial);
+floor.rotateX(-Math.PI / 2);
 
 scene.add(mainContainer);
 mainContainer.add(container);
@@ -75,7 +73,7 @@ var com = 3 * height / 4;
 var g = 9.82;
 
 //Initial snurr
-var appliedForce = 1;
+var appliedForce = 0.5;
 var delta_t = 0.01;
 
 //Tröghetsmoment
@@ -106,15 +104,19 @@ for (var i = 0; i < howManyPsi; ++i) {
 
 
 var mtlLoader = new THREE.MTLLoader();
-//mtlLoader.setTexturePath('/assets/');
-//mtlLoader.setPath('/assets/');
-mtlLoader.load('/assets/snurrSnurr.mtl', function (materials) {
+mtlLoader.setTexturePath('/assets/');
+mtlLoader.setPath('/assets/');
+mtlLoader.load('Snurran5.mtl', function (materials) {
 	materials.preload();
 
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
-	//objLoader.setPath('/assets/');
-	objLoader.load('/assets/snurrSnurr.obj', function (object) {
+	objLoader.setPath('/assets/');
+	objLoader.load('Snurran5.obj', function (object) {
+		/* 	object.scale.x = 0.1;
+			object.scale.y = 0.1;
+			object.scale.z = 0.1;
+	 */
 
 		object.position.x = 0;
 		object.position.y = 2;
