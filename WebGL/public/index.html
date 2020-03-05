@@ -20,7 +20,32 @@
   <script src="/assets/OBJLoader.js"></script>
   <script src="/assets/MTLLoader.js"></script>
   <script type="module" src="script.js"></script>
-  <script type="module" src="euler.js"></script>
+  <script type="module" src="form.js"></script>
+
+
+  <form id="myForm">
+    Enter force: <input type="number" id="force" value="1">
+    Enter delta t: <input type="number" id="dt" value="0.001">
+
+    <input type="submit" value="Submit" onsubmit="callSubmit();">
+  </form>
+
+  <script type="text/javascript">
+    //import { setVariables } from './script.js';
+    var force, dt;
+
+    //userInputForm();
+    function callSubmit() {
+      force = document.getElementById("force").value;
+      dt = document.getElementById("dt").value;
+      console.log('Force: ' + force + ' dt: ' + dt)
+    }
+    console.log('Utanför callSubmit  Force: ' + force + ' dt: ' + dt)
+
+    //setVariables(force, dt);
+
+  </script>
+
 </body>
 
 </html>

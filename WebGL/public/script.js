@@ -2,6 +2,8 @@ import { euler } from './euler.js';
 import { psiRotation } from './psiRotation.js';
 import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
+import { userInputForm } from './form.js';
+
 
 
 //*********************Skapar scenen************************//
@@ -31,13 +33,13 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 fillLight.castShadow = true;
 fillLight.shadowDarkness = 1;
 
-fillLight.shadowCameraNear = 0.5;
-fillLight.shadowCameraFar = 5000;
+fillLight.shadow.camera.near = 0.5;
+fillLight.shadow.camera.far = 5000;
 
-fillLight.shadowCameraRight = 50;
-fillLight.shadowCameraLeft = -50;
-fillLight.shadowCameraTop = 50;
-fillLight.shadowCameraBottom = -50;
+fillLight.shadow.camera.right = 50;
+fillLight.shadow.camera.left = -50;
+fillLight.shadow.camera.top = 50;
+fillLight.shadow.camera.bottom = -50;
 
 scene.add(fillLight);
 //**********************************************************//
@@ -78,7 +80,6 @@ scene.add(floor);
 
 //***********************************************************//
 
-
 //*******************Ekvationer*****************************//
 
 //Snurrans egenskaper
@@ -118,7 +119,6 @@ for (var i = 0; i < howManyPsi; ++i) {
 }
 
 //*****************************************************************//
-
 
 //******************Läs in snurran med textur*********************//
 
@@ -169,3 +169,10 @@ var animate = function () {
 };
 
 setTimeout(animate(), 100);
+
+// Funktion som sätter user input till variabler
+function setVariables(force, dt) {
+	console.log('I setVariables')
+	appliedForce = force;
+	delta_t = dt;
+}
