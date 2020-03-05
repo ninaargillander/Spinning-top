@@ -4,6 +4,6 @@ export function psiRotation(object, angle) {
     object.parent.parent.children["2"].rotation.order = "ZXY"
 
     //Sätter rotation runt egen axel.
-    object.parent.parent.children["2"].rotation.y = angle;
+    object.parent.parent.children["2"].children["0"].rotation.y = angle;
 
 };

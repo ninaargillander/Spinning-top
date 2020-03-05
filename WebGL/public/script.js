@@ -4,7 +4,9 @@ import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
 import { userInputForm } from './form.js';
 
+//console.log(var1)
 
+userInputForm();
 
 //*********************Skapar scenen************************//
 var scene = new THREE.Scene();
@@ -159,7 +161,7 @@ var animate = function () {
 	requestAnimationFrame(animate);
 
 	psiRotation(container, psi[k]);
-	precession(container, phi[k]);
+	//precession(container, phi[k]);
 	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
@@ -170,9 +172,3 @@ var animate = function () {
 
 setTimeout(animate(), 100);
 
-// Funktion som sätter user input till variabler
-function setVariables(force, dt) {
-	console.log('I setVariables')
-	appliedForce = force;
-	delta_t = dt;
-}

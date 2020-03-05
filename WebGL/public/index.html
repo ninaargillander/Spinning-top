@@ -15,36 +15,41 @@
   </style>
 </head>
 
-<body>
+<body id="body">
+
+  <!--<div id="test">
+    <form id="myForm">
+      Enter force: <input type="number" value="1" id="force">
+
+      <input type="button" value="Submit" id="submit">
+    </form>
+  </div>-->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
   <script src="/assets/OBJLoader.js"></script>
   <script src="/assets/MTLLoader.js"></script>
-  <script type="module" src="script.js"></script>
-  <script type="module" src="form.js"></script>
+  <script id="input" type="module" src="script.js">  </script>
 
 
-  <form id="myForm">
-    Enter force: <input type="number" id="force" value="1">
-    Enter delta t: <input type="number" id="dt" value="0.001">
+  <script>
 
-    <input type="submit" value="Submit" onsubmit="callSubmit();">
-  </form>
+    /*var var1 = 1;
 
-  <script type="text/javascript">
-    //import { setVariables } from './script.js';
-    var force, dt;
-
-    //userInputForm();
     function callSubmit() {
-      force = document.getElementById("force").value;
-      dt = document.getElementById("dt").value;
-      console.log('Force: ' + force + ' dt: ' + dt)
+      var1 = document.getElementById("force").value;
+      console.log("var1 in callSubmit " + var1);
+      return var1;
     }
-    console.log('Utanför callSubmit  Force: ' + force + ' dt: ' + dt)
 
-    //setVariables(force, dt);
+    document.getElementById("submit").addEventListener("click", callSubmit)
+
+
+    //document.getElementById("force").setAttribute("value", var1)
+    console.log("force in html " + var1)
+    var var2 = "hej";*/
 
   </script>
+  <script type="module" src="form.js"></script>
 
 </body>
 

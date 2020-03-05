@@ -7,28 +7,45 @@ export function userInputForm() {
     force.setAttribute('type', "number");
     force.setAttribute('id', 'force');
     force.setAttribute('placeholder', 'force');
-
-    var dt = document.createElement("input");
-    dt.setAttribute('type', "number");
-    dt.setAttribute('id', 'dt');
-    dt.setAttribute('placeholder', 'delta t');
+    /*
+        var dt = document.createElement("input");
+        dt.setAttribute('type', "number");
+        dt.setAttribute('id', 'dt');
+        dt.setAttribute('placeholder', 'delta t');*/
 
     var s = document.createElement("button");
-    //s.setAttribute('type', "submit");
+    s.setAttribute('id', "ja");
     s.setAttribute('value', "submit");
-    s.setAttribute('onclick', 'onSubmit();');
+    //s.setAttribute('onclick', 'onSubmit();');
 
     form.appendChild(force);
-    form.appendChild(dt);
+    // form.appendChild(dt);
     form.appendChild(s);
-
     document.getElementsByTagName('body')[0].appendChild(form);
 
-    var theForce = form.elements[0].value;
-    var deltaT = document.getElementById("dt").value;
+    var var1;
 
-    console.log('theForce: ' + theForce);
-    console.log("deltaT: " + deltaT);
+    function callSubmit() {
+        var1 = document.getElementById('force').value;
+        console.log("this is var1: " + var1)
+    }
 
-    return [theForce, deltaT];
+    document.getElementById('ja').addEventListener('click', callSubmit
+    )
+
+    var theForce;
+    /*
+        function submit() {
+            
+     
+            theForce = form.elements[0].value;
+            deltaT = document.getElementById("dt").value;
+     
+            console.log('theForce: ' + theForce);
+            console.log("deltaT: " + deltaT);
+     
+        }
+     */
+
+    return [theForce];
 }
