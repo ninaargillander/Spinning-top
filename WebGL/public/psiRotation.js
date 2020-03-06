@@ -5,5 +5,5 @@ export function psiRotation(object, angle) {
 
     //Sätter rotation runt egen axel.
     object.children["0"].children["0"].rotation.y = angle;
-    console.log(object);
+    //console.log(object);
 };

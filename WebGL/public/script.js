@@ -10,7 +10,7 @@ userInputForm();
 
 //*********************Skapar scenen************************//
 var scene = new THREE.Scene();
-var container = new THREE.Object3D();
+var container = new THREE.Group();
 var mainContainer = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); //75 för snurran, 750 för cyborg
 
@@ -87,13 +87,13 @@ scene.add(floor);
 //Snurrans egenskaper
 var mass = 0.5;
 var radius = 0.02;
-var height = 0.04;
+var height = 0.07;
 var com = 3 * height / 4;
 var g = 9.82;
 
 //Initial snurr
 var appliedForce = 1;
-var delta_t = 0.01;
+var delta_t = 0.1;
 
 //Tröghetsmoment
 var I1 = mass * ((3 / 20) * radius * radius + (3 / 80) * height * height);
@@ -140,7 +140,7 @@ mtlLoader.load('spintop.mtl', function (materials) {
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
 	objLoader.setPath('/assets/');
-	objLoader.load('cyborg.obj', function (object) {
+	objLoader.load('spintop.obj', function (object) {
 
 		object.position.x = 0;
 		object.position.y = 0.45;
@@ -153,6 +153,9 @@ mtlLoader.load('spintop.mtl', function (materials) {
 
 	});
 })
+
+
+
 //****************************************************************//
 var k = 0;
 
@@ -161,7 +164,7 @@ var animate = function () {
 	requestAnimationFrame(animate);
 
 	psiRotation(container, psi[k]);
-	precession(container, phi[k]);
+	//precession(container, phi[k]);
 	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
