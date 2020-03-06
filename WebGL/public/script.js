@@ -2,11 +2,7 @@ import { euler } from './euler.js';
 import { psiRotation } from './psiRotation.js';
 import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
-import { userInputForm } from './form.js';
 
-//console.log(var1)
-
-userInputForm();
 
 //*********************Skapar scenen************************//
 var scene = new THREE.Scene();
@@ -92,7 +88,7 @@ var com = 3 * height / 4;
 var g = 9.82;
 
 //Initial snurr
-var appliedForce = 1;
+var appliedForce = 3;
 var delta_t = 0.1;
 
 //Tröghetsmoment
@@ -164,7 +160,7 @@ var animate = function () {
 	requestAnimationFrame(animate);
 
 	psiRotation(container, psi[k]);
-	//precession(container, phi[k]);
+	precession(container, phi[k]);
 	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
