@@ -6,7 +6,7 @@ import { thetaRotation } from './thetaRotation.js';
 
 //*********************Skapar scenen************************//
 var scene = new THREE.Scene();
-var container = new THREE.Object3D();
+var container = new THREE.Group();
 var mainContainer = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); //75 för snurran, 750 för cyborg
 
@@ -78,19 +78,18 @@ scene.add(floor);
 
 //***********************************************************//
 
-
 //*******************Ekvationer*****************************//
 
 //Snurrans egenskaper
-var mass = 0.5;
+var mass = 0.1;
 var radius = 0.02;
-var height = 0.04;
+var height = 0.07;
 var com = 3 * height / 4;
 var g = 9.82;
 
 //Initial snurr
-var appliedForce = 1;
-var delta_t = 0.01;
+var appliedForce = 3;
+var delta_t = 0.1;
 
 //Tröghetsmoment
 var I1 = mass * ((3 / 20) * radius * radius + (3 / 80) * height * height);
@@ -118,7 +117,6 @@ phi[0] = 0;
 }*/
 
 //*****************************************************************//
-
 
 //******************Läs in snurran med textur*********************//
 
@@ -151,6 +149,9 @@ mtlLoader.load('spintop.mtl', function (materials) {
 
 	});
 })
+
+
+
 //****************************************************************//
 var k = 0;
 
@@ -172,3 +173,4 @@ var animate = function () {
 };
 
 setTimeout(animate(), 100);
+
