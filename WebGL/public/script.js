@@ -160,7 +160,7 @@ var animate = function () {
 	requestAnimationFrame(animate);
 
 	psiRotation(container, psi[k]);
-	precession(container, phi[k]);
+	//precession(container, phi[k]);
 	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
