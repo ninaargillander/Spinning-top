@@ -1,9 +1,9 @@
 export function psiRotation(object, angle) {
 
     //Bestämmer axlarnas rotationsordning till först rotation runt z, sen x, sen y
-    object.parent.parent.children["2"].rotation.order = "ZXY"
+    object.children["0"].children["0"].rotation.order = "ZXY"
 
     //Sätter rotation runt egen axel.
-    object.parent.parent.children["2"].children["0"].rotation.y = angle;
-
+    object.children["0"].children["0"].rotation.y = angle;
+    console.log(object);
 };

@@ -140,7 +140,7 @@ mtlLoader.load('spintop.mtl', function (materials) {
 	var objLoader = new THREE.OBJLoader();
 	objLoader.setMaterials(materials);
 	objLoader.setPath('/assets/');
-	objLoader.load('spintop.obj', function (object) {
+	objLoader.load('cyborg.obj', function (object) {
 
 		object.position.x = 0;
 		object.position.y = 0.45;
@@ -161,7 +161,7 @@ var animate = function () {
 	requestAnimationFrame(animate);
 
 	psiRotation(container, psi[k]);
-	//precession(container, phi[k]);
+	precession(container, phi[k]);
 	thetaRotation(container, 0.4);
 
 	if (k == howManyPsi) k = 0;
