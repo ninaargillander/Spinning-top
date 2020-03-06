@@ -31,13 +31,13 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 fillLight.castShadow = true;
 fillLight.shadowDarkness = 1;
 
-fillLight.shadowCameraNear = 0.5;
-fillLight.shadowCameraFar = 5000;
+fillLight.shadow.camera.near = 0.5;
+fillLight.shadow.camera.far = 5000;
 
-fillLight.shadowCameraRight = 50;
-fillLight.shadowCameraLeft = -50;
-fillLight.shadowCameraTop = 50;
-fillLight.shadowCameraBottom = -50;
+fillLight.shadow.camera.right = 50;
+fillLight.shadow.camera.left = -50;
+fillLight.shadow.camera.top = 50;
+fillLight.shadow.camera.bottom = -50;
 
 scene.add(fillLight);
 //**********************************************************//
@@ -56,7 +56,7 @@ var skyPlane = new THREE.PlaneBufferGeometry(150, 150, 150);
 var skyTexture = textureLoader.load('/img/nz.jpg');
 var skyMaterial = new THREE.MeshPhongMaterial({ map: skyTexture });
 
-//Textur ska repeatas
+//Textur ska upprepas
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(8, 8);
 
@@ -112,10 +112,10 @@ phi[0] = 0;
 
 
 //Eulervinklar
-for (var i = 0; i < howManyPsi; ++i) {
+/*for (var i = 0; i < howManyPsi; ++i) {
 	psi[i + 1] = euler(psi[i], psi_dot, stepLength);
 	phi[i + 1] = euler(phi[i], phi_dot, stepLength);
-}
+}*/
 
 //*****************************************************************//
 
@@ -157,6 +157,9 @@ var k = 0;
 var animate = function () {
 	//Uppdaterar 60 fps 
 	requestAnimationFrame(animate);
+
+	psi[k + 1] = euler(psi[k], psi_dot, stepLength);
+	phi[k + 1] = euler(phi[k], phi_dot, stepLength);
 
 	psiRotation(container, psi[k]);
 	precession(container, phi[k]);
