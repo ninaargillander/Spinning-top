@@ -1,5 +1,5 @@
 import { euler } from './euler.js';
-import { psiRotation } from './psiRotation.js';
+import { spinRotation } from './spinRotation.js';
 import { precession } from './precession.js';
 import { thetaRotation } from './thetaRotation.js';
 
@@ -89,8 +89,8 @@ var com = 3 * height / 4; 	// center of mass, masscentrum
 var g = 9.82;				// gravitation
 
 //Initial snurr
-var appliedForce = 1;
-var delta_t = 0.1;
+var appliedForce = 0.4;
+var delta_t = 0.3;
 
 //Tröghetsmoment
 var I1 = mass * ((3 / 20) * radius * radius + (3 / 80) * height * height);
@@ -150,22 +150,40 @@ var phi_old = 0;	//startvärdet för vinkeln phi antas vara noll
 var psi_new = 0;	//Variabel som kommer att ersättas med det uträknade värdet för nästa vinkel psi
 var phi_new = 0;	//Variabel som kommer att ersättas med det uträknade värdet för nästa vinkel phi
 
+var theta = Math.PI / 12; //Variabel som bestämmr lutningen på snurran
+
+var omega_spin = phi_dot * Math.cos(theta) + psi_dot; //Vinkelhastigheten runt snurrans egen axel
+var omega_prec = 0; //Vinkelhastigheten för precessionen
+
+var spin_old = 0; //Startvärdet för rotationen runt den egna axeln antas vara noll
+var precession_old = 0; //Startvärdet för precessionsrotationen antas vara noll
+var spin_new = 0; //Variabel som kommer att ersättas med det uträknade värdet för nästa vinkel spin
+var precession_new = 0; //Variabel som kommer att ersättas med det uträknade värdet för nästa vinkel
+
+
 var animate = function () {
 	//Uppdaterar 60 fps 
 	requestAnimationFrame(animate);
 
-	// Nästa vinkel för psi och phi beräknas med hjälp av Eulers stegmetod
+	omega_prec = Math.abs(phi_dot*Math.sin(theta)*Math.sin(psi_old));
+
+	// Nästa vinkel för psi beräknas med hjälp av Eulers stegmetod
 	psi_new = euler(psi_old, psi_dot, stepLength);
-	phi_new = euler(phi_old, phi_dot, stepLength);
+
+	//Nästa vinkel för de slutgiltiga rotationerna beräknas med hjälp av Eulers stegmetod
+	precession_new = euler(precession_old, omega_prec, stepLength);
+	spin_new = euler(spin_old, omega_spin, stepLength);
+	
 
 	// Rotation av snurran
-	psiRotation(container, psi_new);			// Psivinkeln sätts till den nya vinkeln
-	precession(container, phi_new);				// Phivinkeln sätts till den nya vinkeln
-	thetaRotation(container, Math.PI / 12);		// Sätt snurran att luta med en vinkel theta = pi / 12.
+	spinRotation(container, spin_new);			// Spin-vinkeln sätts till den nya vinkeln
+	precession(container, precession_new);				// Precessionsvinkeln sätts till den nya vinkeln
+	thetaRotation(container, theta);		// Sätt snurran att luta med en vinkel theta = pi / 12.
 
 	// Sätt de uträknade vinklarna till de "gamla" vinklarna
 	psi_old = psi_new;
-	phi_old = phi_new;
+	precession_old = precession_new;
+	spin_old = spin_new;
 
 	// Rendera scenen
 	renderer.render(scene, camera);

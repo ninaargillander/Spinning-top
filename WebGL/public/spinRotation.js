@@ -1,4 +1,4 @@
-export function psiRotation(object, angle) {
+export function spinRotation(object, angle) {
    
     //Bestämmer axlarnas rotationsordning till först rotation runt z, sen x, sen y
     object.children["0"].children["0"].rotation.order = "ZXY"
