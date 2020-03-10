@@ -1,7 +1,7 @@
 % Definiera alla konstanter
 % Sätter igång snurran
 F = 1;             % Kraften som appliceras
-delta_t = 0.1;     % Tiden under vilken en kraft appliceras
+delta_t = 0.05;     % Tiden under vilken en kraft appliceras
 
 % Snurrans egenskaper
 mass = 0.1;                 % Snurrans massa
@@ -21,6 +21,10 @@ psi_dot = F*r*delta_t/I3;
 % Beräkna phi_dot
 phi_dot = mass*g*com/(psi_dot*I1);
 
+theta = pi / 12;
+
+omega_spin = phi_dot * cos(theta) + psi_dot;
+omega_prec(1) = 0;
 
 h= 1 / 60; % step's size
 N=1000; % number of steps
@@ -28,10 +32,15 @@ N=1000; % number of steps
 % Startvärden för psi och phi
 psi(1) = 0;
 phi(1) = 0;
+prec(1) = 0;
+spin(1) = 0;
 
 % For-loop för att beräkna allt möjligt med hjälp av Eulers stegmetod
 for n=1:N
+    omega_prec(n+1) = abs(phi_dot*sin(theta)*sin(psi(n)));
     
+    prec(n+1) = Euler(prec(n), omega_prec(n), h);
+    spin(n+1) = Euler(spin(n), omega_spin, h);
     psi(n+1) = Euler(psi(n), psi_dot, h);
     phi(n+1) = Euler(phi(n), phi_dot, h);
     
@@ -44,6 +53,13 @@ title('Psi');
 figure;
 plot(t,mod(phi,2*pi),'r');
 title('Phi');
+figure;
+plot(t,mod(spin,2*pi),'r');
+title('Spin');
+figure;
+plot(t,mod(prec,2*pi),'r');
+title('Prec');
+
 
 % Koden nedan visar snurrans rotation, den inre cirkeln är rotationen runt
 % snurrans egen axel, den yttre cirkeln är precessionen.
