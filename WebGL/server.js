@@ -1,3 +1,7 @@
+/* Server.js allows a server to be set
+up locally at localhost:8080
+Code written by @author tristangemus */
+
 var express = require('express'),
   path = require('path'),
   app = express();
