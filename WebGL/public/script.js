@@ -89,21 +89,20 @@ var com = 3 * height / 4; 	// center of mass, masscentrum
 var g = 9.82;				// gravitation
 
 //Initial snurr
-var appliedForce = 1;
+var appliedForce = 2;
 var delta_t = 0.1;
 
 //Tröghetsmoment
-var I1 = mass * ((3 / 20) * radius * radius + (3 / 80) * height * height);
-var I3 = (3 * mass * radius * radius) / 10;
+var Inertia = (3 * mass * radius * radius) / 10;
 
 //Tidssteg mellan vilka vinklarna ska beräknas
 var stepLength = 1 / 60;	// Delat på 60 ty frame rate är vanligtvis 60 fps
 
 //Psi dot, vinkelhastigheten för vinkel psi
-var psi_dot = (appliedForce * radius * delta_t) / I3;
+var psi_dot = (appliedForce * radius * delta_t) / Inertia;
 
 //Phi dot, vinkelhastigheten för vinkeln phi
-var phi_dot = mass * g * com / (psi_dot * I1);
+var phi_dot = mass * g * com / (psi_dot * Inertia);
 
 
 //*****************************************************************//

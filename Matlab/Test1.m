@@ -1,6 +1,6 @@
 % Definiera alla konstanter
 % Sätter igång snurran
-F = 1;             % Kraften som appliceras
+F = 2;             % Kraften som appliceras
 delta_t = 0.1;     % Tiden under vilken en kraft appliceras
 
 % Snurrans egenskaper
@@ -11,19 +11,18 @@ com = 3 * height / 4;       % Avståndet till masscentrum
 g = 9.82;                   % Gravitationskonstanten
 
 
-% Trögehtsmoment
-I1 = mass * ((3/20)*r*r + (3/80)*height*height);  % Tröghetsmoment vid lutning
-I3 = (3*mass*r*r)/10; % Tröghetsmoment när rak (Vertikal om underlaget)
+% Trögehtsmoment för snurran
+Inertia = (3*mass*r*r)/10;
                   
 % Beräkna psi_dot
-psi_dot = F*r*delta_t/I3;
+psi_dot = F*r*delta_t/Inertia;
 
 % Beräkna phi_dot
-phi_dot = mass*g*com/(psi_dot*I1);
+phi_dot = mass*g*com/(psi_dot*Inertia);
 
 
-h= 1 / 60; % step's size
-N=1000; % number of steps
+h= 1 / 60; % Steglängd (för motivering se kommentarer i den implementerade koden)
+N=1000; % Antal steg
 
 % Startvärden för psi och phi
 psi(1) = 0;
